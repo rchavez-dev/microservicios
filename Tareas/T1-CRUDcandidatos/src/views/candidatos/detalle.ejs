@@ -1,0 +1,37 @@
+<%- include("../partials/header") %>
+
+<div class="page-header">
+  <div>
+    <span class="badge">USFX • Candidato</span>
+    <h1>Detalle del candidato</h1>
+  </div>
+  <a class="btn" href="/candidatos">← Volver</a>
+</div>
+
+<div class="card detail-card">
+  <div class="profile-header">
+    <div class="avatar"><%= candidato.nombres.charAt(0).toUpperCase() %></div>
+    <div>
+      <h2><%= candidato.nombres %> <%= candidato.apellido1 %> <%= candidato.apellido2 || "" %></h2>
+      <p>CI: <%= candidato.ci %></p>
+    </div>
+  </div>
+
+  <div class="detail-grid">
+    <div><span>CI</span><strong><%= candidato.ci %></strong></div>
+    <div><span>Nombres</span><strong><%= candidato.nombres %></strong></div>
+    <div><span>Primer apellido</span><strong><%= candidato.apellido1 %></strong></div>
+    <div><span>Segundo apellido</span><strong><%= candidato.apellido2 || "-" %></strong></div>
+    <div><span>Cargo electoral</span><strong><%= candidato.cargo?.nombre || "-" %></strong></div>
+    <div><span>Facultad / lugar</span><strong><%= candidato.lugar?.nombre || "-" %></strong></div>
+  </div>
+
+  <div class="form-actions">
+    <a class="btn warning" href="/candidatos/<%= encodeURIComponent(candidato.ci) %>/editar">Editar</a>
+    <form method="POST" action="/candidatos/<%= encodeURIComponent(candidato.ci) %>/eliminar" onsubmit="return confirm('¿Desea eliminar este candidato?')">
+      <button class="btn danger" type="submit">Eliminar</button>
+    </form>
+  </div>
+</div>
+
+<%- include("../partials/footer") %>

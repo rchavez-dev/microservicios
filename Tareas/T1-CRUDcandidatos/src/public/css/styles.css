@@ -1,0 +1,73 @@
+:root{
+  --primary:#0b5cab;
+  --primary-dark:#08477f;
+  --navy:#102a43;
+  --text:#243b53;
+  --muted:#627d98;
+  --bg:#f4f7fb;
+  --card:#fff;
+  --border:#d9e2ec;
+  --danger:#d64545;
+  --warning:#d98b00;
+  --success:#177245;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--text);background:var(--bg)}
+.container{width:min(1180px,92%);margin:auto}
+.navbar{background:var(--navy);color:white}
+.nav-content{min-height:68px;display:flex;align-items:center;justify-content:space-between}
+.brand{color:white;text-decoration:none;font-weight:bold;font-size:1.08rem}
+nav a{color:#d9e2ec;text-decoration:none;margin-left:18px}
+nav a:hover{color:white}
+main.container{padding:38px 0 65px;min-height:calc(100vh - 130px)}
+.hero,.page-header{display:flex;align-items:center;justify-content:space-between;gap:25px;margin-bottom:25px}
+.hero h1,.page-header h1{margin:7px 0}
+.hero p,.page-header p{margin:0;color:var(--muted)}
+.badge{display:inline-block;padding:5px 9px;background:#e6f0fa;color:var(--primary);border-radius:20px;font-size:.78rem;font-weight:bold}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;box-shadow:0 5px 18px rgba(16,42,67,.06)}
+.section-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-title h2{margin:0;font-size:1.2rem}
+.count{color:var(--muted);font-size:.9rem}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:13px 10px;text-align:left;border-bottom:1px solid var(--border);vertical-align:middle}
+th{background:#f8fafc;font-size:.86rem}
+.tag{display:inline-block;padding:5px 8px;background:#eaf2fb;border-radius:5px;font-size:.84rem;color:var(--primary)}
+.actions{display:flex;flex-wrap:wrap;gap:6px}
+.actions form{display:inline}
+.btn{display:inline-block;padding:9px 13px;border:1px solid #bcccdc;border-radius:7px;background:white;color:var(--text);text-decoration:none;cursor:pointer;font-size:.9rem}
+.btn:hover{filter:brightness(.97)}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:white}
+.btn.warning{background:var(--warning);border-color:var(--warning);color:white}
+.btn.danger{background:var(--danger);border-color:var(--danger);color:white}
+.btn.small{padding:6px 9px;font-size:.8rem}
+.alert{padding:13px 16px;border-radius:7px;margin-bottom:18px}
+.alert.success{background:#e3f6ec;color:#14643d;border:1px solid #b7e4ca}
+.alert.error{background:#fdeaea;color:#9b2c2c;border:1px solid #f5c2c2}
+.form-card{max-width:900px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.form-group{display:flex;flex-direction:column;gap:7px}
+.form-group label{font-weight:bold}
+.form-group small{color:var(--muted)}
+input,select{width:100%;padding:11px 12px;border:1px solid #bcccdc;border-radius:7px;font-size:1rem;background:white}
+input:focus,select:focus{outline:2px solid #b8d5f0;border-color:var(--primary)}
+.form-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:25px}
+.form-actions form{display:inline}
+.empty{text-align:center;padding:45px;color:var(--muted)}
+.detail-card{max-width:850px}
+.profile-header{display:flex;align-items:center;gap:15px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.profile-header h2{margin:0 0 5px}
+.profile-header p{margin:0;color:var(--muted)}
+.avatar{width:55px;height:55px;border-radius:50%;background:var(--primary);color:white;display:grid;place-items:center;font-size:1.4rem;font-weight:bold}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 35px}
+.detail-grid div{padding:16px 4px;border-bottom:1px solid var(--border)}
+.detail-grid span{display:block;color:var(--muted);font-size:.86rem;margin-bottom:5px}
+.error-page{text-align:center;max-width:650px;margin:50px auto}
+footer{background:var(--navy);color:#bcccdc;padding:22px 0;text-align:center}
+footer p{margin:0}
+@media(max-width:750px){
+ .nav-content,.hero,.page-header{flex-direction:column;align-items:flex-start;padding:15px 0}
+ .form-grid,.detail-grid{grid-template-columns:1fr}
+ nav a{margin:0 15px 0 0}
+ .section-title{align-items:flex-start;gap:10px;flex-direction:column}
+}

@@ -1,0 +1,61 @@
+<%- include("../partials/header") %>
+
+<div class="hero">
+  <div>
+    <span class="badge">USFX • Sucre</span>
+    <h1>Registro de Candidatos</h1>
+    <p>Administración de candidatos para elecciones universitarias.</p>
+  </div>
+  <a class="btn primary" href="/candidatos/nuevo">+ Registrar candidato</a>
+</div>
+
+<% if (mensaje) { %>
+<div class="alert success"><%= mensaje %></div>
+<% } %>
+
+<div class="card">
+  <div class="section-title">
+    <h2>Candidatos registrados</h2>
+    <span class="count"><%= candidatos.length %> registro(s)</span>
+  </div>
+
+  <% if (candidatos.length === 0) { %>
+    <div class="empty">
+      <h3>No existen candidatos registrados</h3>
+      <p>Presione "Registrar candidato" para agregar uno.</p>
+    </div>
+  <% } else { %>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>CI</th>
+          <th>Nombre completo</th>
+          <th>Cargo electoral</th>
+          <th>Facultad / lugar</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% candidatos.forEach(c => { %>
+        <tr>
+          <td><strong><%= c.ci %></strong></td>
+          <td><%= c.nombres %> <%= c.apellido1 %> <%= c.apellido2 || "" %></td>
+          <td><span class="tag"><%= c.cargo?.nombre || "-" %></span></td>
+          <td><%= c.lugar?.nombre || "-" %></td>
+          <td class="actions">
+            <a class="btn small" href="/candidatos/<%= encodeURIComponent(c.ci) %>">Ver</a>
+            <a class="btn small warning" href="/candidatos/<%= encodeURIComponent(c.ci) %>/editar">Editar</a>
+            <form method="POST" action="/candidatos/<%= encodeURIComponent(c.ci) %>/eliminar" onsubmit="return confirm('¿Desea eliminar este candidato?')">
+              <button class="btn small danger" type="submit">Eliminar</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <% } %>
+</div>
+
+<%- include("../partials/footer") %>

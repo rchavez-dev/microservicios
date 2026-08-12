@@ -1,0 +1,77 @@
+<%- include("../partials/header") %>
+
+<div class="page-header">
+  <div>
+    <span class="badge">USFX • Elecciones</span>
+    <h1><%= modo === "crear" ? "Registrar candidato" : "Editar candidato" %></h1>
+    <p>Complete los datos solicitados.</p>
+  </div>
+  <a class="btn" href="/candidatos">← Volver</a>
+</div>
+
+<% if (error) { %>
+<div class="alert error"><%= error %></div>
+<% } %>
+
+<div class="card form-card">
+<form method="POST" action="<%= modo === 'crear' ? '/candidatos' : '/candidatos/' + encodeURIComponent(candidato.ci) + '/editar' %>">
+
+  <div class="form-grid">
+    <div class="form-group">
+      <label for="ci">Carnet de Identidad (CI) *</label>
+      <input id="ci" name="ci" maxlength="12" required
+        value="<%= candidato.ci || '' %>"
+        <%= modo === "editar" ? "readonly" : "" %>>
+      <small>Máximo 12 caracteres.</small>
+    </div>
+
+    <div class="form-group">
+      <label for="nombres">Nombres *</label>
+      <input id="nombres" name="nombres" maxlength="60" required value="<%= candidato.nombres || '' %>">
+    </div>
+
+    <div class="form-group">
+      <label for="apellido1">Primer apellido *</label>
+      <input id="apellido1" name="apellido1" maxlength="30" required value="<%= candidato.apellido1 || '' %>">
+    </div>
+
+    <div class="form-group">
+      <label for="apellido2">Segundo apellido</label>
+      <input id="apellido2" name="apellido2" maxlength="40" value="<%= candidato.apellido2 || '' %>">
+    </div>
+
+    <div class="form-group">
+      <label for="cargo_id">Cargo al que postula *</label>
+      <select id="cargo_id" name="cargo_id" required>
+        <option value="">Seleccione el cargo...</option>
+        <% cargos.forEach(cargo => { %>
+          <option value="<%= cargo.id %>" <%= Number(candidato.cargo_id) === Number(cargo.id) ? "selected" : "" %>>
+            <%= cargo.nombre %>
+          </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="lugar_id">Facultad / lugar USFX Sucre *</label>
+      <select id="lugar_id" name="lugar_id" required>
+        <option value="">Seleccione la facultad...</option>
+        <% lugares.forEach(lugar => { %>
+          <option value="<%= lugar.id %>" <%= Number(candidato.lugar_id) === Number(lugar.id) ? "selected" : "" %>>
+            <%= lugar.nombre %>
+          </option>
+        <% }) %>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <a class="btn" href="/candidatos">Cancelar</a>
+    <button class="btn primary" type="submit">
+      <%= modo === "crear" ? "Guardar candidato" : "Actualizar candidato" %>
+    </button>
+  </div>
+</form>
+</div>
+
+<%- include("../partials/footer") %>
