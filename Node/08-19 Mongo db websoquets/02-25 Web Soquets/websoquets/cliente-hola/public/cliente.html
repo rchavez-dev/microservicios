@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Hola Mundo</title>
+</head>
+<body>
+    <h2>WebSocket - Hola Mundo</h2>
+    <input type="text" id="nombre" placeholder="Escribe tu nombre..." />
+    <button onclick="enviarNombre()">Enviar</button>
+    <p id="respuesta"></p>
+
+    <script>
+        const socket = new WebSocket('ws://localhost:8080');
+
+        socket.onopen = function () {
+            console.log(" Conectado al servidor.");
+        };
+
+        socket.onmessage = function (event) {
+            document.getElementById("respuesta").innerText = event.data;
+        };
+
+        function enviarNombre() {
+            let nombre = document.getElementById("nombre").value;
+            if (nombre.trim() !== "") {
+                socket.send(nombre);
+            }
+        }
+
+        socket.onclose = function () {
+            console.log("❌ Conexión cerrada.");
+        };
+    </script>
+</body>
+</html>
