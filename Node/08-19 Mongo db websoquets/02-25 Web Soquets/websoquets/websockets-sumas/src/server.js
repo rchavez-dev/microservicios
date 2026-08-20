@@ -30,3 +30,4 @@ wss.on('connection', function connection(ws) {
         setTimeout(generarOperacion, 2000);
     });
 });
+

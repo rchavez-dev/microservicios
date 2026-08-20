@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Tres en Raya - WebSocket</title>
+  <style>
+    body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f4f4f9; }
+    h1 { margin-bottom: 10px; }
+    #status { font-size: 1.2rem; margin-bottom: 15px; font-weight: bold; }
+    .board { display: grid; grid-template-columns: repeat(3, 100px); grid-gap: 8px; }
+    .cell { width: 100px; height: 100px; background: #fff; border: 2px solid #333; font-size: 2.5rem; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 8px; user-select: none; }
+    .cell:hover { background: #e8e8e8; }
+    .cell.disabled { pointer-events: none; background: #fafafa; }
+    button { margin-top: 20px; padding: 10px 20px; font-size: 1rem; cursor: pointer; border-radius: 5px; border: none; background: #007bff; color: white; }
+    button:hover { background: #0056b3; }
+  </style>
+</head>
+<body>
+
+  <h1>Tres en Raya (WebSockets)</h1>
+  <div id="status">Tu turno (X)</div>
+  <div class="board" id="board"></div>
+  <button onclick="resetGame()">Reiniciar Partida</button>
+
+  <script>
+    let board = ['', '', '', '', '', '', '', '', ''];
+    let isMyTurn = true;
+    let isGameOver = false;
+
+    const socket = new WebSocket('ws://localhost:8080');
+    const boardEl = document.getElementById('board');
+    const statusEl = document.getElementById('status');
+
+    socket.onopen = () => console.log('Conectado al servidor WebSocket');
+
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      board = data.board;
+      statusEl.textContent = data.message;
+
+      if (data.status !== 'PLAYING') {
+        isGameOver = true;
+        isMyTurn = false;
+      } else {
+        // Habilitar turno ANTES de redibujar la pantalla
+        isMyTurn = true;
+      }
+
+      renderBoard();
+    };
+
+    function renderBoard() {
+      boardEl.innerHTML = '';
+      board.forEach((val, idx) => {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        
+        // Si ya tiene valor, no es tu turno o el juego acabó, se deshabilita
+        if (val !== '' || !isMyTurn || isGameOver) {
+          cell.classList.add('disabled');
+        }
+
+        cell.textContent = val;
+        cell.addEventListener('click', () => makeMove(idx));
+        boardEl.appendChild(cell);
+      });
+    }
+
+    function makeMove(idx) {
+      if (!isMyTurn || board[idx] !== '' || isGameOver) return;
+
+      board[idx] = 'X';
+      isMyTurn = false; // Bloquea clics mientras el servidor piensa
+      statusEl.textContent = 'Servidor pensando...';
+      renderBoard();
+
+      // Enviar tablero al servidor
+      socket.send(JSON.stringify({ board }));
+    }
+
+    function resetGame() {
+      board = ['', '', '', '', '', '', '', '', ''];
+      isMyTurn = true;
+      isGameOver = false;
+      statusEl.textContent = 'Tu turno (X)';
+      renderBoard();
+    }
+
+    renderBoard();
+  </script>
+</body>
+</html>
