@@ -1,0 +1,23 @@
+# 1. Imagen base mínima sobre Alpine Linux
+FROM node:20-alpine
+
+# 2. Directorio de trabajo
+WORKDIR /usr/src/app
+
+# 3. Copiar manifiestos
+COPY package*.json ./
+
+# 4. Instalar solo dependencias de producción y limpiar caché
+RUN npm install --omit=dev && npm cache clean --force
+
+# 5. Copiar código asignando la propiedad al usuario no privilegiado existente (node)
+COPY --chown=node:node . .
+
+# 6. Cambiar al usuario sin privilegios que ya viene en la imagen
+USER node
+
+# 7. Documentar puerto
+EXPOSE 3000
+
+# 8. Ejecución directa
+CMD ["node", "app.js"]

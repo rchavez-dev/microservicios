@@ -1,0 +1,32 @@
+services:
+  proxy:
+    image: nginx:alpine
+    container_name: proxy_nginx
+    ports:
+      - "80:80"
+    networks:
+      - red_frontal
+
+  api:
+    image: node:20-alpine
+    container_name: api_servicio
+    command: sh -c "while true; do sleep 3600; done"
+    ports:
+      - "3000:3000"
+    networks:
+      - red_frontal
+      - red_datos
+
+  mongo:
+    image: mongo:6
+    container_name: mongo_db
+    restart: always
+    # NO se define la sección ports: para no publicar el puerto al host
+    networks:
+      - red_datos
+
+networks:
+  red_frontal:
+    driver: bridge
+  red_datos:
+    driver: bridge
