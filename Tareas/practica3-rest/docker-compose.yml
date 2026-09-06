@@ -1,19 +1,57 @@
 services:
-  api:
-    build: .
-    ports:
-      - "3000:3000"
-    environment:
-      PORT: 3000
-      MONGO_URL: mongodb://mongo:27017
-      MONGO_DB: practica3
-    depends_on:
-      - mongo
-
   mongo:
     image: mongo:7
+    container_name: practica3-mongo
+    restart: always
+    ports:
+      - "27017:27017"
     volumes:
-      - datos:/data/db
+      - mongo_data:/data/db
+    networks:
+      red-practica3:
+        aliases:
+          - mongo
+          - practica3-mongo
+
+  api:
+    build: .
+    container_name: practica3-api
+    restart: always
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - PORT=3000
+      - MONGO_URL=mongodb://mongo:27017
+      - MONGO_DB=practica3
+    depends_on:
+      - mongo
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://127.0.0.1:3000/salud || exit 1
+      interval: 3s
+      timeout: 2s
+      retries: 10
+      start_period: 5s
+    networks:
+      - red-practica3
+
+  consumidor:
+    build: ./consumidor
+    container_name: practica3-consumidor
+    restart: always
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - API_URL=http://api:3000
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - red-practica3
 
 volumes:
-  datos:
+  mongo_data:
+
+networks:
+  red-practica3:
+    driver: bridge

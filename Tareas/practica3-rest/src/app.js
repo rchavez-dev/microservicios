@@ -10,7 +10,10 @@ app.get("/salud", (_req, res) => res.json({ estado: "arriba" }));
 
 // Rutas versionadas
 const { router } = require("./usuarios.rutas");
+const { router: pedidosRouter } = require("./pedidos.rutas");
+
 app.use("/v1/usuarios", router);
+app.use("/v1/pedidos", pedidosRouter);
 
 // Documentación Swagger / OpenAPI
 const doc = YAML.load("./openapi.yaml");
