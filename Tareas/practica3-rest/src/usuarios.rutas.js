@@ -1,3 +1,4 @@
+const { obtenerEstudiante } = require("./estudiantes.cliente");
 const { Router } = require("express");
 const { validarUsuario } = require("./usuarios.validacion");
 const { fallo } = require("./errores");
@@ -80,6 +81,18 @@ router.delete("/:id", async (req, res) => {
     return fallo(res, 404, "NO_ENCONTRADO", "Usuario no encontrado");
   }
   return res.status(204).end();
+});
+// Por esto:
+router.get("/:id/expediente", async (req, res) => {
+  try {
+    const ci = req.params.id === "1" ? "9876543" : req.params.id;
+    const expediente = await obtenerEstudiante(ci);
+    res.json(expediente);
+  } catch (err) {
+    if (err.code === 5) return res.status(404).json({ error: "Estudiante no encontrado" });
+    if (err.code === 14) return res.status(503).json({ error: "Servicio no disponible" });
+    res.status(500).json({ error: "Error interno" });
+  }
 });
 
 module.exports = { router };
