@@ -1,0 +1,3 @@
+GraphQL escuchando en http://localhost:4000/
+[SQL 1] SELECT id, cliente_id, fecha, total FROM ventas ORDER BY id
+[SQL 2] SELECT id, venta_id, producto, cantidad, precio_unitario AS precioUnitario FROM detalle_venta WHERE venta_id IN (?)

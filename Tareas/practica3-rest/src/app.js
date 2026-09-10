@@ -14,6 +14,7 @@ const { router: pedidosRouter } = require("./pedidos.rutas");
 
 app.use("/v1/usuarios", router);
 app.use("/v1/pedidos", pedidosRouter);
+app.use("/usuarios", router);
 
 // Documentación Swagger / OpenAPI
 const doc = YAML.load("./openapi.yaml");

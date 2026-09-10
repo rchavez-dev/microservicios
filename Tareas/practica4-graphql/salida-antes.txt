@@ -1,0 +1,6 @@
+GraphQL escuchando en http://localhost:4000/
+[SQL 1] SELECT id, cliente_id, fecha, total FROM ventas ORDER BY id
+[SQL 2] SELECT id, producto, cantidad, precio_unitario AS precioUnitario FROM detalle_venta WHERE venta_id = ?
+[SQL 3] SELECT id, producto, cantidad, precio_unitario AS precioUnitario FROM detalle_venta WHERE venta_id = ?
+[SQL 4] SELECT id, producto, cantidad, precio_unitario AS precioUnitario FROM detalle_venta WHERE venta_id = ?
+[SQL 5] SELECT id, producto, cantidad, precio_unitario AS precioUnitario FROM detalle_venta WHERE venta_id = ?

@@ -1,0 +1,51 @@
+
+## 1. Requisitos Previos
+
+* **Node.js**: v20 o superior
+* **npm**: v10 o superior
+* **MySQL 8**: en ejecución en `localhost:3306`
+* **curl**: para pruebas de consola y mediciones
+
+---
+
+## Instalación de Dependencias
+npm install
+
+## Orden de Arranque de los ServiciosPara que la composición del patrón BFF funcione, los servicios deben levantarse en este orden estricto:
+
+  ## Paso A: Levantar el Servicio REST (Puerto 3000)El microservicio REST de usuarios debe estar escuchando en el puerto 3000:
+
+  # En una terminal dedicada
+    node rest/servicio_usuarios.js
+
+ # verificacion rapida
+ curl -s http://localhost:3000/usuarios/1
+
+## Paso B: Levantar la Capa GraphQL (Puerto 4000)
+# En otra terminal
+node src/servidor.js
+
+## Pruebas y Verificación de Funcionalidades
+  # A. Composición BFF (MySQL + REST)
+
+  curl -s -X POST http://localhost:4000/ \
+  -H "Content-Type: application/json" \
+  -d '{"query": "{ venta(id: 1) { fecha total cliente { nombre email } detalle { producto cantidad } } }"}'
+
+  # Validación del Problema N+1 resuelto con DataLoader
+
+  curl -s -X POST http://localhost:4000/ \
+  -H "Content-Type: application/json" \
+  -d '{"query": "{ ventas { id detalle { producto } } }"}'
+
+  # Seguridad y Regla de Profundidad (Depth Limit)
+
+  curl -s -X POST http://localhost:4000/ \
+  -H "Content-Type: application/json" \
+  -d '{"query": "{ venta(id: 1) { detalle { producto } } }"}'
+
+  # Mutación con Regla de Negocio y Formato de Errores
+
+    curl -s -X POST http://localhost:4000/ \
+    -H "Content-Type: application/json" \
+    -d '{"query": "mutation { cambiarCantidad(detalleId: 1, cantidad: 0) { id cantidad } }"}'
