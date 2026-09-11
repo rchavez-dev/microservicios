@@ -119,5 +119,25 @@ router.delete("/:id", async (req, res) => {
   }
   return res.status(204).end();
 });
+const { consultarPlato } = require("./pedidos.cliente");
 
+// Ruta REST que consume internamente el microservicio gRPC
+router.get("/platos-grpc/:id", async (req, res) => {
+  try {
+    const plato = await consultarPlato(req.params.id);
+    return res.json(plato);
+  } catch (error) {
+    // Mapeo riguroso de códigos gRPC a estados HTTP
+    if (error.code === 5) { // NOT_FOUND
+      return res.status(404).json({ error: error.details });
+    }
+    if (error.code === 3) { // INVALID_ARGUMENT
+      return res.status(400).json({ error: error.details });
+    }
+    if (error.code === 14) { // UNAVAILABLE
+      return res.status(503).json({ error: "Microservicio gRPC de cocina no disponible" });
+    }
+    return res.status(500).json({ error: "Error interno en la pasarela REST" });
+  }
+});
 module.exports = { router };

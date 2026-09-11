@@ -1,0 +1,14 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install --omit=dev
+
+COPY proto/ ./proto/
+COPY src/ ./src/
+
+ENV GRPC_ADDR=0.0.0.0:50052
+EXPOSE 50052
+
+CMD ["node", "src/servidor-pedidos.js"]

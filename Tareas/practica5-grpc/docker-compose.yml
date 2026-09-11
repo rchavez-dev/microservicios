@@ -3,18 +3,21 @@ services:
     image: mongo:6-jammy
     restart: always
 
-  estudiantes:
-    build: .
+  pedidos:
+    build:
+      context: .
+      dockerfile: Dockerfile.pedidos
+    restart: always
 
   usuarios:
     build: ../practica3-rest
     ports:
       - "3000:3000"
     environment:
+      MONGO_URL: mongodb://mongo:27017/restaurante
+      MONGO_DB: restaurante
+      GRPC_PEDIDOS_ADDR: pedidos:50052
       PORT: 3000
-      GRPC_ADDR: estudiantes:50051
-      MONGO_URL: mongodb://mongo:27017
-      MONGO_DB: practica3
     depends_on:
       - mongo
-      - estudiantes
+      - pedidos

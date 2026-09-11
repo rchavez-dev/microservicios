@@ -4,8 +4,11 @@ let colUsuarios;
 let colPedidos;
 
 async function conectar() {
-  const cliente = await new MongoClient(process.env.MONGO_URL).connect();
-  const db = cliente.db(process.env.MONGO_DB);
+  const url = process.env.MONGO_URL || "mongodb://mongo:27017";
+  const dbName = process.env.MONGO_DB || "restaurante";
+
+  const cliente = await new MongoClient(url).connect();
+  const db = cliente.db(dbName);
 
   colUsuarios = db.collection("usuarios");
   await colUsuarios.createIndex({ correo: 1 }, { unique: true });

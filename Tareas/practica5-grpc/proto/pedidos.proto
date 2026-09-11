@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+package restaurante.pedidos;
+
+// Estado del plato o preparación en cocina
+enum EstadoPlato {
+  ESTADO_NO_ESPECIFICADO = 0;
+  EN_ESPERA = 1;
+  PREPARANDO = 2;
+  LISTO = 3;
+  ENTREGADO = 4;
+}
+
+message ItemPedido {
+  string id_plato = 1;
+  int32 cantidad = 2;
+  string observaciones = 3;
+}
+
+message ObtenerPlatoRequest {
+  string id_plato = 1;
+}
+
+message PlatoInfo {
+  reserved 2, 5;
+  reserved "categoria";
+
+  string id_plato = 1;
+  string nombre_plato = 7;     // Nuevo número y nombre asignado
+  double precio = 3;
+  bool disponible = 4;
+  int32 tiempo_preparacion_min = 6;
+  string categoria_plato = 8;  // Nuevo número y nombre asignado
+}
+
+message CrearPedidoRequest {
+  string id_pedido = 1;
+  string mesa_o_cliente = 2;
+  repeated ItemPedido items = 3;
+}
+
+message CrearPedidoResponse {
+  string id_pedido = 1;
+  EstadoPlato estado_inicial = 2;
+  double total_estimado = 3;
+  string mensaje = 4;
+}
+
+message ActualizarEstadoRequest {
+  string id_pedido = 1;
+  EstadoPlato nuevo_estado = 2;
+}
+
+message ActualizarEstadoResponse {
+  bool exito = 1;
+  string id_pedido = 2;
+  EstadoPlato estado_actual = 3;
+}
+
+message CancelarPedidoRequest {
+  string id_pedido = 1;
+  string motivo = 2;
+}
+
+message CancelarPedidoResponse {
+  bool cancelado = 1;
+  string mensaje = 2;
+}
+
+// Mensaje para filtrar el flujo de pedidos
+message ListarPedidosRequest {
+  string estado_filtro = 1; // Vacío para traer todo el histórico
+}
+
+// Estructura resumida de comanda transmitida en el flujo
+message PedidoFlujoItem {
+  string id_pedido = 1;
+  string mesa_o_cliente = 2;
+  double total = 3;
+  EstadoPlato estado = 4;
+}
+
+// Servicio gRPC con la quinta operación de streaming
+service PedidosService {
+  rpc ObtenerPlato (ObtenerPlatoRequest) returns (PlatoInfo);
+  rpc CrearPedido (CrearPedidoRequest) returns (CrearPedidoResponse);
+  rpc ActualizarEstado (ActualizarEstadoRequest) returns (ActualizarEstadoResponse);
+  rpc CancelarPedido (CancelarPedidoRequest) returns (CancelarPedidoResponse);
+  rpc ListarPedidos (ListarPedidosRequest) returns (stream PedidoFlujoItem);
+}
