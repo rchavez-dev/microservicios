@@ -1,0 +1,15 @@
+syntax = "proto3";
+package clinica.medicos.v1;
+service ServicioMedicos {
+  rpc ObtenerMedico (MedicoReq) returns (Medico);
+  rpc ListarMedicos (ListarMedicosReq) returns (ListaMedicos);
+  rpc ListarHorariosDisponibles (MedicoReq) returns (stream Horario);
+  rpc ReservarHorario (HorarioReq) returns (Horario);
+  rpc LiberarHorario (HorarioReq) returns (Horario);
+}
+message MedicoReq { int32 id = 1; }
+message ListarMedicosReq { string especialidad = 1; }
+message Medico { int32 id = 1; string nombre = 2; string especialidad = 3; string matricula = 4; }
+message ListaMedicos { repeated Medico medicos = 1; }
+message HorarioReq { int32 id = 1; }
+message Horario { int32 id = 1; int32 medico_id = 2; string fecha = 3; string hora = 4; bool disponible = 5; }

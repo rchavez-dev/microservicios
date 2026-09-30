@@ -1,0 +1,93 @@
+name: clinica-san-xavier
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-clinica_pacientes}
+      MYSQL_USER: ${MYSQL_USER:-clinica}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Define MYSQL_PASSWORD en .env}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Define MYSQL_ROOT_PASSWORD en .env}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./ms-pacientes/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    networks: [clinica]
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: ${PG_DATABASE:-clinica_medicos}
+      POSTGRES_USER: ${PG_USER:-clinica}
+      POSTGRES_PASSWORD: ${PG_PASSWORD:?Define PG_PASSWORD en .env}
+    volumes:
+      - pg_data:/var/lib/postgresql
+      - ./ms-medicos/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    networks: [clinica]
+  mongo:
+    image: mongo:latest
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    networks: [clinica]
+  ms-pacientes:
+    image: clinica/ms-pacientes:1.0.0
+    build: ./ms-pacientes
+    environment:
+      PORT: 3001
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-clinica_pacientes}
+      MYSQL_USER: ${MYSQL_USER:-clinica}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?Define MYSQL_PASSWORD en .env}
+    ports: ["3001:3001"]
+    depends_on:
+      mysql: {condition: service_healthy}
+    networks: [clinica]
+  ms-medicos:
+    image: clinica/ms-medicos:1.0.0
+    build: ./ms-medicos
+    environment:
+      GRPC_PORT: 50051
+      PG_HOST: postgres
+      PG_PORT: 5432
+      PG_DATABASE: ${PG_DATABASE:-clinica_medicos}
+      PG_USER: ${PG_USER:-clinica}
+      PG_PASSWORD: ${PG_PASSWORD:?Define PG_PASSWORD en .env}
+    expose: ["50051"]
+    depends_on:
+      postgres: {condition: service_healthy}
+    networks: [clinica]
+  ms-citas:
+    image: clinica/ms-citas:1.0.0
+    build: ./ms-citas
+    environment:
+      PORT: 4000
+      MONGO_URL: mongodb://mongo:27017
+      MONGO_DATABASE: clinica_citas
+      PACIENTES_URL: http://ms-pacientes:3001/api/v1
+      MEDICOS_GRPC: ms-medicos:50051
+    ports: ["4000:4000"]
+    depends_on:
+      mongo: {condition: service_healthy}
+      ms-pacientes: {condition: service_started}
+      ms-medicos: {condition: service_started}
+    networks: [clinica]
+networks:
+  clinica:
+    driver: bridge
+volumes:
+  mysql_data:
+  pg_data:
+  mongo_data:
