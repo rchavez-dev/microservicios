@@ -1,0 +1,15 @@
+{
+  "name": "infra-rabbitmq-clinica",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "topologia": "node topologia.js",
+    "pruebas": "node publicar-pruebas.js",
+    "duplicado": "node publicar-duplicado.js",
+    "durabilidad": "node prueba-durabilidad.js"
+  },
+  "dependencies": {
+    "amqplib": "^0.10.9",
+    "dotenv": "^17.2.3"
+  }
+}
