@@ -6,9 +6,27 @@ async function crearRepositorio(uri) {
 
   return {
     guardar: (t) => col.insertOne(t),
-    buscarPorTitulo: (titulo) => col.findOne({ titulo }),
-    contar: () => col.countDocuments(),
-    cerrar: () => cliente.close(),
+
+    buscarPorTitulo: (titulo) =>
+      col.findOne({ titulo }),
+
+    contar: () =>
+      col.countDocuments(),
+
+    actualizarEstado: (titulo, completada) =>
+      col.updateOne(
+        { titulo },
+        { $set: { completada } }
+      ),
+
+    eliminarPorTitulo: (titulo) =>
+      col.deleteOne({ titulo }),
+
+    limpiar: () =>
+      col.deleteMany({}),
+
+    cerrar: () =>
+      cliente.close()
   };
 }
 
