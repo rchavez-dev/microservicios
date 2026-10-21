@@ -1,0 +1,7 @@
+replicaCount: 4
+
+image:
+  tag: "2.0.0"
+
+ingress:
+  host: tareas-prod.localhost
