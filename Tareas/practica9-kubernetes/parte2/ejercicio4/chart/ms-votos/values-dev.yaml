@@ -1,0 +1,15 @@
+replicaCount: 1
+
+image:
+  tag: "1.2.0"
+
+ingress:
+  host: votos-dev.localhost
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 150m
+    memory: 128Mi
