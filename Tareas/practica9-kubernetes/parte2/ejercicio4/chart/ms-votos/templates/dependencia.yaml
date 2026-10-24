@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: votos-dependencia
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: votos-dependencia
+  template:
+    metadata:
+      labels:
+        app: votos-dependencia
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.27.5
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: votos-dependencia
+spec:
+  selector:
+    app: votos-dependencia
+  ports:
+    - port: 80
+      targetPort: 80
