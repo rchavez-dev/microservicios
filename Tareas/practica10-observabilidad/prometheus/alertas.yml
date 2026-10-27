@@ -1,0 +1,11 @@
+groups:
+  - name: alertas-tareas
+    rules:
+      - alert: TasaDeErroresAlta
+        expr: (sum(rate(duracion_segundos_count{codigo=~"5.."}[1m])) / sum(rate(duracion_segundos_count[1m]))) * 100 > 5
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Tasa de errores HTTP 5xx supera el 5%"
+          description: "La tasa de errores en tareas-api es alta."
