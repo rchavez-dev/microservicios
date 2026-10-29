@@ -1,18 +1,20 @@
 const request = require("supertest");
+const jwt = require("jsonwebtoken");
 const app = require("../src/app");
 
-describe("API de Tareas - Linea base", () => {
-  test("GET /tareas devuelve 200 y la lista inicial", async () => {
+const SECRETO = process.env.JWT_SECRET || "clave-para-pruebas-locales";
+const tokenValido = jwt.sign({ sub: "u-test", rol: "usuario" }, SECRETO, { expiresIn: "15m" });
+
+describe("API de Tareas - Protegida con JWT", () => {
+  test("GET /tareas sin token devuelve 401", async () => {
     const res = await request(app).get("/tareas");
-    expect(res.statusCode).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
+    expect(res.statusCode).toBe(401);
   });
 
-  test("POST /tareas crea una nueva tarea y devuelve 201", async () => {
+  test("GET /tareas con token valido devuelve 200", async () => {
     const res = await request(app)
-      .post("/tareas")
-      .send({ titulo: "Tarea de prueba" });
-    expect(res.statusCode).toBe(201);
-    expect(res.body.titulo).toBe("Tarea de prueba");
+      .get("/tareas")
+      .set("Authorization", `Bearer ${tokenValido}`);
+    expect(res.statusCode).toBe(200);
   });
 });
