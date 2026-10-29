@@ -26,3 +26,6 @@ jobs:
           npm test
         env:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
+      - name: Auditoria de dependencias
+        run: npm audit --audit-level=critical
