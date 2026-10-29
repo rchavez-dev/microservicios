@@ -1,8 +1,9 @@
+require("dotenv").config();
 const request = require("supertest");
 const jwt = require("jsonwebtoken");
 const app = require("../src/app");
 
-const SECRETO = process.env.JWT_SECRET || "clave-para-pruebas-locales";
+const SECRETO = process.env.JWT_SECRET;
 const tokenValido = jwt.sign({ sub: "u-test", rol: "usuario" }, SECRETO, { expiresIn: "15m" });
 
 describe("API de Tareas - Protegida con JWT", () => {
